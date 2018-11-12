@@ -1,0 +1,98 @@
+
+<!-- chnote Added "extends base" below 10/10/18 -->
+{% extends 'heritagesites/base.html' %}
+
+{% block content %}
+
+<!-- safe filter on for raw HTML stored in database -->
+
+<h2>{{site.site_name | safe}}</h2>
+
+{% if site.description %}
+  <div class="row">
+    <div class="col-sm-2">
+      <p>Description</p>
+    </div>
+    <div class="col-sm-10">
+      {{site.description | safe}}
+    </div>
+  </div>
+{% endif %}
+
+<!-- chnote Added "justification" below 10/10/18 -->
+
+{% if site.justification %}
+  <div class="row">
+    <div class="col-sm-2">
+      <p>Justification</p>
+    </div>
+    <div class="col-sm-10">
+      {{site.justification | safe}}
+    </div>
+  </div>
+{% endif %}
+
+{% if site.date_inscribed %}
+  <div class="row">
+    <div class="col-sm-2">
+      <p>Date inscribed</p>
+    </div>
+    <div class="col-sm-10">
+      {{site.date_inscribed}}
+    </div>
+  </div>
+{% endif %}
+
+{% if site.latitude and site.longitude %}
+  <div class="row">
+    <div class="col-sm-2">
+      <p>Geo coordinates</p>
+    </div>
+    <div class="col-sm-4">
+      {{site.latitude}}, {{site.longitude}} (<span style="font-style:italic">lat</span>.,
+      <span style="font-style:italic">long</span>.)
+    </div>
+  </div>
+{% endif %}
+
+<!-- chnote Added "area hectares" below 10/10/18 -->
+
+{% if site.area_hectares %}
+  <div class="row">
+    <div class="col-sm-2">
+      <p>Area in Hectares</p>
+    </div>
+    <div class="col-sm-10">
+      {{site.area_hectares | safe}}
+    </div>
+  </div>
+{% endif %}
+
+
+<!-- chnote Added "transboundary" below 10/10/18 -->
+
+{% if site.transboundary %}
+  <div class="row">
+    <div class="col-sm-2">
+      <p>Transboundary</p>
+    </div>
+    <div class="col-sm-10">
+      {{site.transboundary | safe}}
+    </div>
+  </div>
+{% endif %}
+
+<!-- chnote Added "category" below 10/10/18 -->
+
+{% if site.heritagesitecategory %}
+  <div class="row">
+    <div class="col-sm-2">
+      <p>category</p>
+    </div>
+    <div class="col-sm-10">
+      {{site.heritagesitecategory | safe}}
+    </div>
+  </div>
+{% endif %}
+
+{% endblock content %}}

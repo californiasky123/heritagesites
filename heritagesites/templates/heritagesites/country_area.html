@@ -1,0 +1,41 @@
+<!-- chnote Added "extends base" below 10/10/18 -->
+{% extends 'heritagesites/base.html' %}
+
+{% block content %}
+  {% if user.is_authenticated %}
+   {% include 'pagination.html' %} 
+    
+    <!-- added above after taking out nav (section 5.4 of exercise 7, nov 5 2018-->
+
+    <article>
+      <header>
+        <h2>Country Areas</h2>
+      </header>
+
+      {% if countries %}
+      <ul>
+
+        <!-- chnote added for site in sites 10/10/18 -->
+
+        {% for country in countries %}
+
+        <!-- safe filter on for raw HTML stored in database -->
+        <li><a href="{% url 'country_detail' country.pk %}">{{ country.country_area_name | safe }}</a></li>
+
+        <!-- chnote added endfor 10/10/18 -->
+
+        {% endfor %}
+
+      </ul>
+      {% else %}
+      <p>No country areas are available to view.</p>
+      {% endif %}
+
+      <p>page count: {{ countries.count }}</p>
+    </article>
+
+  {% else %}
+    <a href="{% url 'login' %}">Log in</a>
+  {% endif %}
+
+{% endblock content %}}

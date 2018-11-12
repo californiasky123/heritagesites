@@ -1,0 +1,126 @@
+
+<!-- chnote Added "extends base" below 10/10/18 -->
+{% extends 'heritagesites/base.html' %}
+
+{% block content %}
+
+ {% if user.is_authenticated %}
+
+    <!-- safe filter on for raw HTML stored in database -->
+
+    <h2>{{country.country_name | safe}}</h2>
+
+    {% if country.country_area_name %}
+      <div class="row">
+        <div class="col-sm-2">
+          <p>Country Area Name</p>
+        </div>
+        <div class="col-sm-10">
+          {{country.country_area_name | safe}}
+        </div>
+      </div>
+    {% endif %}
+
+    #################################
+    #################################
+    <!--fixed this --> 
+
+    {% if country.intermediate_region %}
+      <div class="row">
+        <div class="col-sm-2">
+          <p>Justification</p>
+        </div>
+        <div class="col-sm-10">
+          {{country.intermediate_region | safe}}
+        </div>
+      </div>
+    {% endif %}
+
+    #################################
+    #################################
+
+
+    {% if country.m49_code %}
+      <div class="row">
+        <div class="col-sm-2">
+          <p>M49 code</p>
+        </div>
+        <div class="col-sm-10">
+          {{country.m49_code}}
+        </div>
+      </div>
+    {% endif %}
+
+    {% if country.iso_alpha3_code %}
+      <div class="row">
+        <div class="col-sm-2">
+          <p>ISO Alpha 3 Code</p>
+        </div>
+        <div class="col-sm-10">
+          {{country.iso_alpha3_code}}
+        </div>
+      </div>
+    {% endif %}
+
+    {% if country.iso_alpha3_code %}
+      <div class="row">
+        <div class="col-sm-2">
+          <p>ISO Alpha 3 Code</p>
+        </div>
+        <div class="col-sm-10">
+          {{country.iso_alpha3_code}}
+        </div>
+      </div>
+    {% endif %}
+
+    <!-- THE ONES BELOW PULL FROM A DIFFERENT TABLE - MIGHT NEED TO CALL THEM DIRECTLY -->
+
+    {% if country.region.region_name %}
+      <div class="row">
+        <div class="col-sm-2">
+          <p>Region Name</p>
+        </div>
+        <div class="col-sm-10">
+          {{country.region.region_name | safe}}
+        </div>
+      </div>
+    {% endif %}
+
+    {% if country.sub_region.sub_region_name %}
+      <div class="row">
+        <div class="col-sm-2">
+          <p>Sub Region Name</p>
+        </div>
+        <div class="col-sm-10">
+          {{country.sub_region.sub_region_name | safe}}
+        </div>
+      </div>
+    {% endif %}
+
+    {% if country.intermediate_region.intermediate_region_name %}
+      <div class="row">
+        <div class="col-sm-2">
+          <p>intermediate Region Name</p>
+        </div>
+        <div class="col-sm-10">
+          {{country.intermediate_region.intermediate_region_name | safe}}
+        </div>
+      </div>
+    {% endif %}
+
+    {% if country.dev_status.dev_status_name %}
+      <div class="row">
+        <div class="col-sm-2">
+          <p>Dev status</p>
+        </div>
+        <div class="col-sm-10">
+          {{country.dev_status.dev_status_name | safe}}
+        </div>
+      </div>
+    {% endif %}
+
+
+  {% else %}
+    <a href="{% url 'login' %}">Log in</a>
+  {% endif %}
+{% endblock content %}}
