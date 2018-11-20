@@ -167,7 +167,7 @@ class HeritageSite(models.Model):
         names = []
         for region in regions:
             # try: 
-            name = region.region_name # relationship between tables is dots, relationship between variable and a table is also dots
+            name = region.location.region.region_name # relationship between tables is dots, relationship between variable and a table is also dots
             #name = region.region_name
             if name is None:
                 continue
@@ -179,36 +179,28 @@ class HeritageSite(models.Model):
     
 
     @property
-    def intermediate_region_names(self):
-        #irs = self.country_area.select_related('location__intermediate_region').order_by('location__intermediate_region__intermediate_region_name')
-        intermediate_regions = self.country_area.select_related('intermediate_region').order_by('intermediate_region_name')
-            ## returning ORM queryset iterator 
-        names = []
-        for intermediate_region in intermediate_regions: # object
-            try: # larger try/except look is necessary to deal with none ntypes
-                name = intermediate_region.location.intermediate_region.intermediate_region_name
-                #name = Pancakes
-                # have to explain how to traverse through full dataset (dynamic change)
-                if name is None:
-                    continue
-                if name not in names:
-                    names.append(name)
-            except: 
-                continue
-
-        return ', '.join(names)
-
-        #chnote added intermediate_names function during hw9
-
-
-
-    @property
     def sub_region_names(self):
         sub_regions = self.country_area.select_related('location__sub_region').order_by('location__sub_region__sub_region_name')
         names = []
         for sub_region in sub_regions:
+            # try: 
+            name = sub_region.location.sub_region.sub_region_name # relationship between tables is dots, relationship between variable and a table is also dots
+            #name = region.region_name
+            if name is None:
+                continue
+            if name not in names:
+                names.append(name)
+            # except: 
+            #     continue 
+        return ', '.join(names)
+
+    @property
+    def intermediate_region_names(self):
+        intermediate_regions = self.country_area.select_related('location__intermediate_region').order_by('location__intermediate_region__intermediate_region_name')
+        names = []
+        for intermediate_region in intermediate_regions:
             try: 
-                name = sub_region.location.sub_region.sub_region_name
+                name = intermediate_region.location.intermediate_region.intermediate_region_name
                 if name is None:
                     continue
                 if name not in names:
