@@ -32,6 +32,27 @@ class CountryArea(models.Model):
     def __str__(self):
         return self.country_area_name
 
+class Location(models.Model): #CHnote added 10/2/108
+    """
+    New model based on Mtg 5 refactoring of the database.
+    """
+    location_id = models.AutoField(primary_key=True)
+   #location_name = models.CharField(unique=True, max_length=100)
+    planet = models.ForeignKey('Planet', models.DO_NOTHING)
+    region = models.ForeignKey('Region', models.DO_NOTHING, blank=True, null=True)
+    sub_region = models.ForeignKey('SubRegion', models.DO_NOTHING, blank=True, null=True)
+    intermediate_region = models.ForeignKey('IntermediateRegion', models.DO_NOTHING, blank=True, null=True)
+    # define additional properties as needed    
+
+    class Meta:
+        managed = False   #<-- #YOU MUST SET managed TO FALSE
+        db_table = 'location'
+        ordering = ['location_id']
+        verbose_name = 'Location'
+        verbose_name_plural = 'Locations'
+
+    def __str__(self):
+        return str(self.location_id) #<-- MUST RETURN A STRING
 
 '''   
 class CountryArea(models.Model):
@@ -91,6 +112,8 @@ class HeritageSite(models.Model):
     # Intermediate model (country_area -> heritage_site_jurisdiction <- heritage_site)
     country_area = models.ManyToManyField(CountryArea, through='HeritageSiteJurisdiction')
 
+    location = models.ManyToManyField(Location, through='HeritageSiteJurisdiction')
+
     class Meta:
         managed = False
         db_table = 'heritage_site'
@@ -101,16 +124,99 @@ class HeritageSite(models.Model):
     def __str__(self):
         return self.site_name
 
-    def get_absolute_url(self):
-        # return reverse('site_detail', args=[str(self.id)])
-        return reverse('site_detail', kwargs={'pk': self.pk}) #chnote added 11/8/2018 hw8 - is this the correct spot?
-
     def country_area_display(self):
         """Create a string for country_area. This is required to display in the Admin view."""
         return ', '.join(
             country_area.country_area_name for country_area in self.country_area.all()[:25])
 
     country_area_display.short_description = 'Country or Area'
+
+    def get_absolute_url(self):
+    # return reverse('site_detail', args=[str(self.id)])
+        return reverse('site_detail', kwargs={'pk': self.pk}) #chnote added 11/8/2018 hw8 - is this the correct spot?
+
+    
+    #chnote country_area_names added 11/13/2018 hw9
+    @property
+    def country_area_names(self):
+        """
+        Returns a list of UNSD countries/areas (names only) associated with a Heritage Site.
+        Note that not all Heritage Sites are associated with a country/area (e.g., Old City
+        Walls of Jerusalem). In such cases the Queryset will return as <QuerySet [None]> and the
+        list will need to be checked for None or a TypeError (sequence item 0: expected str
+        instance, NoneType found) runtime error will be thrown.
+        :return: string
+        """
+        countries = self.country_area.select_related('location').order_by('country_area_name')
+
+        names = []
+        for country in countries:
+            name = country.country_area_name
+            if name is None:
+                continue
+            iso_code = country.iso_alpha3_code
+
+            name_and_code = ''.join([name, ' (', iso_code, ')'])
+            if name_and_code not in names:
+                names.append(name_and_code)
+        return ', '.join(names)
+
+    @property
+    def region_names(self):
+        regions = self.country_area.select_related('location__region').order_by('location__region__region_name')
+        names = []
+        for region in regions:
+            # try: 
+            name = region.region_name # relationship between tables is dots, relationship between variable and a table is also dots
+            #name = region.region_name
+            if name is None:
+                continue
+            if name not in names:
+                names.append(name)
+            # except: 
+            #     continue 
+        return ', '.join(names)
+    
+
+    @property
+    def intermediate_region_names(self):
+        #irs = self.country_area.select_related('location__intermediate_region').order_by('location__intermediate_region__intermediate_region_name')
+        intermediate_regions = self.country_area.select_related('intermediate_region').order_by('intermediate_region_name')
+            ## returning ORM queryset iterator 
+        names = []
+        for intermediate_region in intermediate_regions: # object
+            try: # larger try/except look is necessary to deal with none ntypes
+                name = intermediate_region.location.intermediate_region.intermediate_region_name
+                #name = Pancakes
+                # have to explain how to traverse through full dataset (dynamic change)
+                if name is None:
+                    continue
+                if name not in names:
+                    names.append(name)
+            except: 
+                continue
+
+        return ', '.join(names)
+
+        #chnote added intermediate_names function during hw9
+
+
+
+    @property
+    def sub_region_names(self):
+        sub_regions = self.country_area.select_related('location__sub_region').order_by('location__sub_region__sub_region_name')
+        names = []
+        for sub_region in sub_regions:
+            try: 
+                name = sub_region.location.sub_region.sub_region_name
+                if name is None:
+                    continue
+                if name not in names:
+                    names.append(name)
+            except: 
+                continue
+
+        return ', '.join(names)
 
 
 '''
@@ -122,7 +228,7 @@ class HeritageSite(models.Model):
     date_inscribed = models.TextField(blank=True, null=True)  # This field type is a guess.
     longitude = models.DecimalField(max_digits=11, decimal_places=8, blank=True, null=True)
     latitude = models.DecimalField(max_digits=10, decimal_places=8, blank=True, null=True)
-    area_hectares = models.FloatField(blank=True, null=True)
+    area_hectares = models.FloatField(blank=True, null=Trpkue)
     heritage_site_category = models.ForeignKey('HeritageSiteCategory', models.DO_NOTHING)
     transboundary = models.IntegerField()
 
@@ -162,6 +268,7 @@ class HeritageSiteJurisdiction(models.Model):
     heritage_site_jurisdiction_id = models.AutoField(primary_key=True)
     heritage_site = models.ForeignKey(HeritageSite, models.DO_NOTHING)
     country_area = models.ForeignKey(CountryArea, models.DO_NOTHING)
+    location = models.ForeignKey(Location, models.DO_NOTHING)
 
     class Meta:
         managed = False
@@ -224,6 +331,17 @@ class Region(models.Model):
 
     def __str__(self):
         return self.region_name
+        
+    # """
+    #     Returns a list of UNSD regions (names only) associated with a Heritage Site.
+    #     Note that not all Heritage Sites are associated with a region. In such cases the
+    #     Queryset will return as <QuerySet [None]> and the list will need to be checked for
+    #     None or a TypeError (sequence item 0: expected str instance, NoneType found) runtime
+    #     error will be thrown.
+    #     :return: string
+    # """
+
+
 
 
 '''
@@ -251,6 +369,7 @@ class SubRegion(models.Model):
 
     def __str__(self):
         return self.sub_region_name
+
 
 
 '''
@@ -282,24 +401,3 @@ class Planet(models.Model): #CHnote added 10/2/108
     def __str__(self):
         return self.planet_name #<-- MUST RETURN A STRING
 
-class Location(models.Model): #CHnote added 10/2/108
-    """
-    New model based on Mtg 5 refactoring of the database.
-    """
-    location_id = models.AutoField(primary_key=True)
-   #location_name = models.CharField(unique=True, max_length=100)
-    planet = models.ForeignKey('Planet', models.DO_NOTHING)
-    region = models.ForeignKey('Region', models.DO_NOTHING, blank=True, null=True)
-    sub_region = models.ForeignKey('SubRegion', models.DO_NOTHING, blank=True, null=True)
-    intermediate_region = models.ForeignKey('IntermediateRegion', models.DO_NOTHING, blank=True, null=True)
-    # define additional properties as needed    
-
-    class Meta:
-        managed = False   #<-- #YOU MUST SET managed TO FALSE
-        db_table = 'location'
-        ordering = ['location_id']
-        verbose_name = 'Location'
-        verbose_name_plural = 'Locations'
-
-    def __str__(self):
-        return str(self.location_id) #<-- MUST RETURN A STRING

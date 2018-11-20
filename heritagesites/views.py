@@ -2,17 +2,25 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.views import generic
+from django_filters.views import FilterView
 
 from .models import HeritageSite
 from .models import HeritageSiteJurisdiction
 from .models import CountryArea
+from .models import Region
+from .models import IntermediateRegion
+from .models import SubRegion
 from .forms import HeritageSiteForm # chnote added 11/9/2018, hw8, new addition during debugging 
+from .filters import HeritageSiteFilter #chnote added 11/19/18, hw9
+from django_filters.views import FilterView
+
 
 from django.contrib.auth.decorators import login_required #chnote added 11/2/18 hw7
 from django.utils.decorators import method_decorator #chnote added 11/2/18 hw7
 import crispy_forms
 from django.urls import reverse_lazy #chnote added 11/9/2018, hw8, new addition during debugging 
 from django.urls import reverse #chnote added 11/8/2018 hw8, new addition during debugging
+
 
 
 def index(request):
@@ -164,7 +172,7 @@ class SiteUpdateView(generic.UpdateView):
 class SiteDeleteView(generic.DeleteView):
 	model = HeritageSite
 	success_message = "Heritage Site deleted successfully"
-	success_url = reverse_lazy('site')
+	success_url = reverse_lazy('sites')
 	context_object_name = 'site'
 	template_name = 'heritagesites/site_delete.html'
 
@@ -182,3 +190,8 @@ class SiteDeleteView(generic.DeleteView):
 		self.object.delete()
 
 		return HttpResponseRedirect(self.get_success_url())
+
+#chnote added hw9 - may need to add import statement
+class SiteFilterView(FilterView):
+	filterset_class = HeritageSiteFilter
+	template_name = 'heritagesites/site_filter.html'

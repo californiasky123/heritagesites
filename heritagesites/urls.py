@@ -10,7 +10,8 @@ urlpatterns = [
     path('country/<int:pk>/', views.CountryAreaDetailView.as_view(), name='country_area_detail'), #added during midterm 10/23
     path('sites/new/', views.SiteCreateView.as_view(), name='site_new'), #chnote added 11/8 during hw8
     path('sites/<int:pk>/delete/', views.SiteDeleteView.as_view(), name='site_delete'), #chnote added 11/8 during hw8
-path('sites/<int:pk>/update/', views.SiteUpdateView.as_view(), name='site_update'), #chnote added 11/8 during hw8
+	path('sites/<int:pk>/update/', views.SiteUpdateView.as_view(), name='site_update'), #chnote added 11/8 during hw8
+	path('sites/filter/', views.SiteFilterView.as_view(), kwargs = None, name = 'search') #chnote added hw9 - section 2.5. Is the reverse lookup name correct?
 ]
 
 #chnote: created 10/10/2018 from starter code

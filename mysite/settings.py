@@ -12,9 +12,16 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 
 import os
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '405931315675-hp4nvgd7tk6mhjbpk38cmclasjqtndv6.apps.googleusercontent.com' #chnote added 11/2/18 hw7
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'hhjBGF4QM0gNk6_kqG9DBKly'#chnote added 11/2/18 hw7
-SOCIAL_AUTH_URL_NAMESPACE = 'social' #chnote added 11/2/18 hw7
+from mysite import secrets
+
+SECRET_KEY = secrets.SECRET_KEY
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = secrets.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = secrets.SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET
+
+
+
+
 LOGIN_URL = '/auth/login/google-oauth2/' #chnote added 11/2/18 hw7
 # LOGIN_URL = 'login'
 
@@ -31,7 +38,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '+h4r5lhxezxr$2tf(7fdcbb$dhf&9_rlu$vj0sht3kwvcd!s0o'
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -52,6 +59,7 @@ INSTALLED_APPS = [
     'crispy_forms', #chnote added 11/8/2018 - hw 8
     'social_django', #chnote added 11/2/2018 - hw 7
     'test_without_migrations', #chnote added 10/9/2018
+    'django_filters', #chnote added 11/13/2018 hw9
 
 ]
 

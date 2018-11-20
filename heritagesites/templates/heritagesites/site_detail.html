@@ -21,8 +21,52 @@
          </div>
        </div>
      </header>
+
+<!--   {% if site.property_name %}
+    <div class="row">
+      <div class="col-sm-2">
+        <p>Property</p>
+      </div>
+      <div class="col-sm-10">
+        <p>{{ site.property_name }}</p>
+      </div>
+    </div>
+  {% endif %} -->
+
+  {% if site.heritage_site_jurisdiction.location.region.region_name %}
+    <div class="row">
+      <div class="col-sm-2">
+        <p>Region</p>
+      </div>
+      <div class="col-sm-10">
+        <p>{{ site.heritage_site_jurisdiction.location.region.region_name }}</p>
+      </div>
+    </div>
+  {% endif %}
+
+  {% if country_area.location.sub_region.sub_region_name %}
+    <div class="row">
+      <div class="col-sm-2">
+        <p>Sub Region</p>
+      </div>
+      <div class="col-sm-10">
+        <p>{{ country_area.location.sub_region.sub_region_name }}</p>
+      </div>
+    </div>
+  {% endif %}
+
+  {% if country_area.location.intermediate_region.intermediate_region_name %}
+    <div class="row">
+      <div class="col-sm-2">
+        <p>Intermediate Region</p>
+      </div>
+      <div class="col-sm-10">
+        <p>{{ country_area.location.intermediate_region.intermediate_region_name }}</p>
+      </div>
+    </div>
+  {% endif %}
    
-     {% if site.country_area.all %}
+    <!--  {% if site.country_area.all %}
        <div class="row">
          <div class="col-sm-2">
            <p>Region</p>
@@ -59,7 +103,7 @@
                  {% ifchanged country_area.location.planet_id %}
                    {{ country_area.location.planet.unsd_name.strip }}
                  {% endifchanged %}
-               {% endif %}
+               {% endif %} -->
              {% endfor %}
            </p>
            {% endspaceless %}
@@ -73,17 +117,37 @@
          <div class="col-sm-10">
            {% spaceless %}
            <p>
-             {% for country_area in site.country_area.all %}
+             {% for abc in site.country_area.all %}
                {% if forloop.last %}
-                 {{ country_area.country_area_name.strip }} ({{ country_area.iso_alpha3_code.strip }})
+                 {{ abc.country_area_name.strip }} ({{ abc.iso_alpha3_code.strip }})
                {% else %}
-                 {{ country_area.country_area_name.strip }} {{ country_area.iso_alpha3_code.strip|add_parens|add_trailing_comma }}
+                 {{ abc.country_area_name.strip }} {{ acbc.iso_alpha3_code.strip|add_parens|add_trailing_comma }}
                {% endif %}
              {% endfor %}
            </p>
            {% endspaceless %}
          </div>
        </div>
+
+       <div class="row">
+         <div class="col-sm-2">
+           <p>REGION REGION </p>
+         </div>
+         <div class="col-sm-10">
+           {% spaceless %}
+           <p>
+             {% for site in site.heritage_site_jurisdiction.location.region.all %}
+               {% if forloop.last %}
+                 {{ region.location.region.region_name.strip }}
+               {% else %}
+                 {{ region.location.region.region_name.strip }}
+               {% endif %}
+             {% endfor %}
+           </p>
+           {% endspaceless %}
+         </div>
+       </div>
+
    
      {% endif %}
    
@@ -97,7 +161,53 @@
          </div>
        </div>
      {% endif %}
-   
+
+
+     <!-- Below is new hw9 -->
+     {% if site.country_area_names%}
+       <div class="row">
+         <div class="col-sm-2">
+           <p>Country Area NEW NEW NEW </p>
+         </div>
+         <div class="col-sm-10">
+           <p>{{ site.country_area_names}}</p>
+         </div>
+       </div>
+     {% endif %}
+
+      {% if site.region_names%}
+       <div class="row">
+         <div class="col-sm-2">
+           <p>Region NEW NEW NEW </p>
+         </div>
+         <div class="col-sm-10">
+           <p>{{ site.region_names}}</p>
+         </div>
+       </div>
+     {% endif %}
+
+      {% if site.sub_region_names%}
+       <div class="row">
+         <div class="col-sm-2">
+           <p>Sub Region</p>
+         </div>
+         <div class="col-sm-10">
+           <p>{{ site.subregion_names}}</p>
+         </div>
+       </div>
+     {% endif %}
+
+      {% if site.intermediate_region_names%}
+       <div class="row">
+         <div class="col-sm-2">
+           <p>Sub Region</p>
+         </div>
+         <div class="col-sm-10">
+           <p>{{ site.intermediateregion_names}}</p>
+         </div>
+       </div>
+     {% endif %}
+
      <!-- SHOW STUDENTS THAT TEMPLATE NEEDS FIXING: EXTRA <p> -->
      {% if site.description %}
        <div class="row">
