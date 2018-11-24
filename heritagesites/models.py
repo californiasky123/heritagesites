@@ -19,8 +19,8 @@ class CountryArea(models.Model):
     # intermediate_region = models.ForeignKey('IntermediateRegion', models.DO_NOTHING, blank=True, null=True)
     m49_code = models.SmallIntegerField()
     iso_alpha3_code = models.CharField(max_length=3)
-    dev_status = models.ForeignKey('DevStatus', models.DO_NOTHING, blank=True, null=True)
-    location = models.ForeignKey('Location', models.DO_NOTHING, default=1) #chnote: added 10/2/18
+    dev_status = models.ForeignKey('DevStatus', on_delete=models.PROTECT, blank=True, null=True)
+    location = models.ForeignKey('Location', on_delete=models.PROTECT, default=1) #chnote: added 10/2/18
     
     class Meta:
         managed = False
@@ -38,10 +38,10 @@ class Location(models.Model): #CHnote added 10/2/108
     """
     location_id = models.AutoField(primary_key=True)
    #location_name = models.CharField(unique=True, max_length=100)
-    planet = models.ForeignKey('Planet', models.DO_NOTHING)
-    region = models.ForeignKey('Region', models.DO_NOTHING, blank=True, null=True)
-    sub_region = models.ForeignKey('SubRegion', models.DO_NOTHING, blank=True, null=True)
-    intermediate_region = models.ForeignKey('IntermediateRegion', models.DO_NOTHING, blank=True, null=True)
+    planet = models.ForeignKey('Planet', on_delete=models.PROTECT)
+    region = models.ForeignKey('Region', on_delete=models.PROTECT, blank=True, null=True)
+    sub_region = models.ForeignKey('SubRegion', on_delete=models.PROTECT, blank=True, null=True)
+    intermediate_region = models.ForeignKey('IntermediateRegion', on_delete=models.PROTECT, blank=True, null=True)
     # define additional properties as needed    
 
     class Meta:
@@ -106,13 +106,13 @@ class HeritageSite(models.Model):
     longitude = models.DecimalField(max_digits=11, decimal_places=8, blank=True, null=True)
     latitude = models.DecimalField(max_digits=10, decimal_places=8, blank=True, null=True)
     area_hectares = models.FloatField(blank=True, null=True)
-    heritage_site_category = models.ForeignKey('HeritageSiteCategory', models.DO_NOTHING)
+    heritage_site_category = models.ForeignKey('HeritageSiteCategory', on_delete=models.PROTECT)
     transboundary = models.IntegerField()
 
     # Intermediate model (country_area -> heritage_site_jurisdiction <- heritage_site)
     country_area = models.ManyToManyField(CountryArea, through='HeritageSiteJurisdiction')
 
-    location = models.ManyToManyField(Location, through='HeritageSiteJurisdiction')
+    #location = models.ManyToManyField(Location, through='HeritageSiteJurisdiction')
 
     class Meta:
         managed = False
@@ -258,9 +258,8 @@ class HeritageSiteCategory(models.Model):
 
 class HeritageSiteJurisdiction(models.Model):
     heritage_site_jurisdiction_id = models.AutoField(primary_key=True)
-    heritage_site = models.ForeignKey(HeritageSite, models.DO_NOTHING)
-    country_area = models.ForeignKey(CountryArea, models.DO_NOTHING)
-    location = models.ForeignKey(Location, models.DO_NOTHING)
+    heritage_site = models.ForeignKey(HeritageSite, on_delete=models.CASCADE)
+    country_area = models.ForeignKey(CountryArea, on_delete=models.CASCADE)
 
     class Meta:
         managed = False
@@ -284,7 +283,7 @@ class HeritageSiteJurisdiction(models.Model):
 class IntermediateRegion(models.Model):
     intermediate_region_id = models.AutoField(primary_key=True)
     intermediate_region_name = models.CharField(unique=True, max_length=100)
-    sub_region = models.ForeignKey('SubRegion', models.DO_NOTHING)
+    sub_region = models.ForeignKey('SubRegion', on_delete=models.PROTECT)
 
     class Meta:
         managed = False
@@ -312,7 +311,7 @@ class IntermediateRegion(models.Model):
 class Region(models.Model):
     region_id = models.AutoField(primary_key=True)
     region_name = models.CharField(unique=True, max_length=100)
-    planet = models.ForeignKey('Planet', models.DO_NOTHING, default=1) #chnote: added 10/2/18
+    planet = models.ForeignKey('Planet', on_delete=models.PROTECT, default=1) #chnote: added 10/2/18
 
     class Meta:
         managed = False
@@ -350,7 +349,7 @@ class Region(models.Model):
 class SubRegion(models.Model):
     sub_region_id = models.AutoField(primary_key=True)
     sub_region_name = models.CharField(unique=True, max_length=100)
-    region = models.ForeignKey(Region, models.DO_NOTHING)
+    region = models.ForeignKey(Region, on_delete=models.PROTECT)
 
     class Meta:
         managed = False

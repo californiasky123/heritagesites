@@ -1,0 +1,11 @@
+################
+#   Database   #
+################
+
+mysql:
+  host: localhost
+  port: 3306
+  user: caroline
+  passwd: 123Remember
+  db: unesco_heritage_sites
+  local_infile: True

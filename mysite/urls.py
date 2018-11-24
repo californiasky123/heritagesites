@@ -50,5 +50,9 @@ urlpatterns = [
     path('login/', LoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), {'next_page': settings.LOGOUT_REDIRECT_URL},
          name='logout'),
+    path('heritagesites/api/rest-auth/', include('rest_auth.urls')), #chnote added hw10
+    path('heritagesites/api/rest-auth/registration/', include('rest_auth.registration.urls')), #chnote added hw10
     path('heritagesites/', include('heritagesites.urls')),
+    path('api-auth/', include('rest_framework.urls')), #chnote added hw10
+    path('heritagesites/api/', include('api.urls')), #chnote added hw10
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

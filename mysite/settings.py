@@ -46,6 +46,13 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 
+#chnote added 2 settings hw9
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+SITE_ID = 1
+
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -56,10 +63,21 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'heritagesites.apps.HeritagesitesConfig',
+    'api.apps.ApiConfig', #chnote added hw9
     'crispy_forms', #chnote added 11/8/2018 - hw 8
     'social_django', #chnote added 11/2/2018 - hw 7
     'test_without_migrations', #chnote added 10/9/2018
     'django_filters', #chnote added 11/13/2018 hw9
+    'rest_framework', #chnote added hw10
+    'rest_framework.authtoken', #chnote added hw10
+    'rest_auth', #chnote added hw10
+    'corsheaders', #chnote added hw10
+    'django.contrib.sites', #chnote added hw9
+    'allauth', #chnnote added hw9
+    'allauth.account',#chnnote added hw9
+    'allauth.socialaccount',#chnnote added hw9
+    'rest_auth.registration',#chnnote added hw9
+    'rest_framework_swagger', #chnnote added hw9
 
 ]
 
@@ -73,6 +91,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'social_django.middleware.SocialAuthExceptionMiddleware', #ch added 11/2/2018 hw7
+    'corsheaders.middleware.CorsMiddleware', #chnote added hw9
+    'django.middleware.common.CommonMiddleware', #chnote added hw9
 ]
 
 ROOT_URLCONF = 'mysite.urls'
@@ -173,3 +193,35 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',                                 # <-- Uncomment
 )
 
+
+
+#chnote REST_FRAMEWORK below added during hw9
+
+# Use Django's standard `django.contrib.auth` permissions, or allow read-only access for
+# unauthenticated users.
+# Default Auth: Basic (retired in favor of TokenAuth)
+# Default Auth: SessionAuth (required by browsable API)
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication'
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly'
+        # 'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+        # 'rest_framework.permissions.AllowAny'
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10
+}
+
+#chnote CORS_ORIGIN_WHITELIST below added during hw9
+
+# A list of origin hostnames that are authorized to make cross-site HTTP requests.
+# The value 'null' can also appear in this list, and will match the Origin: null header
+# that is used in “privacy-sensitive contexts”, such as when the client is running from
+# a file:// domain. Defaults to [].
+# Port 3000 is the default port for React apps.
+CORS_ORIGIN_WHITELIST = (
+    '127.0.0.1:3000/'
+)
